@@ -40,13 +40,6 @@ Start each AI player server (example for Gemini):
 python gemini_runner.py
 ```
 
-Or run individual servers:
-
-```powershell
-uvicorn gemini_player_factory:create_app --factory --port 8001
-uvicorn huggingface_player_api:app --reload --port 8000
-```
-
 ## Running the Tournament
 
 Start the tournament engine:
