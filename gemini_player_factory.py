@@ -1,4 +1,5 @@
 import random
+from enum import Enum
 from fastapi import FastAPI
 from google import genai
 from google.genai import types
@@ -12,13 +13,16 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 client = genai.Client(api_key=GEMINI_API_KEY)
 active_chats = {}
 
+class MoveType(str, Enum):
+    COOPERATE = "cooperate"
+    DEFECT = "defect"
 
 class MoveRequest(BaseModel):
     opponent_id: str
     history: List[Dict]
 
 class MoveResponse(BaseModel):
-    move: str
+    move: MoveType
 
 def create_app(model_id: str = "gemini-2.0-flash-lite") -> FastAPI:
     app = FastAPI(title=f"Gemini AI Player: {model_id}")
@@ -52,6 +56,7 @@ def create_app(model_id: str = "gemini-2.0-flash-lite") -> FastAPI:
             if random.random() < 0.2:
                 prompt += "\nConsider switching your move this round for strategic variety."
 
+            print(f"Prompt to {model_id} player: {prompt}\n")
             response = chat_session.send_message(prompt)
             print(f"{model_id} Player Response: '{response}'")
             response_text = response.text.strip().lower()
